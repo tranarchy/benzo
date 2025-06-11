@@ -68,7 +68,7 @@ int hex_to_int(char c) {
     return -1;
 }
 
-size_t get_pattern_len(char *pattern, uint8_t *bytes_out, int *mask_out, size_t max_len) {
+size_t get_pattern_len(char *pattern, uint8_t *bytes_out, size_t max_len) {
     size_t pattern_len = 0;
 
     char *p = pattern;
@@ -86,7 +86,6 @@ size_t get_pattern_len(char *pattern, uint8_t *bytes_out, int *mask_out, size_t 
         int low_nibble = hex_to_int(*(p + 1));
 
         bytes_out[pattern_len] = (uint8_t)((high_nibble << 4) | low_nibble);
-        mask_out[pattern_len] = 0;
 
         p += 2; 
         
@@ -98,14 +97,12 @@ size_t get_pattern_len(char *pattern, uint8_t *bytes_out, int *mask_out, size_t 
 
 unsigned long long sig_scan(char* pattern, char *file_name, pid_t pid) {
     uint8_t pattern_bytes[MAX_PATTERN_LEN];
-    int pattern_mask[MAX_PATTERN_LEN];
-
     size_t pattern_len;
 
     char maps_path[128];
     char line[1024];
 
-    pattern_len = get_pattern_len(pattern, pattern_bytes, pattern_mask, MAX_PATTERN_LEN);
+    pattern_len = get_pattern_len(pattern, pattern_bytes, MAX_PATTERN_LEN);
 
     unsigned char *read_buffer = (unsigned char*)malloc(MEMORY_CHUNK_SIZE + pattern_len - 1);
 
@@ -159,7 +156,7 @@ unsigned long long sig_scan(char* pattern, char *file_name, pid_t pid) {
             for (size_t j = 0; j <= (size_t)nread - pattern_len; ++j) {
                 int match = 1;
                 for (size_t k = 0; k < pattern_len; ++k) {
-                    if (!pattern_mask[k] && read_buffer[j + k] != pattern_bytes[k]) {
+                    if (read_buffer[j + k] != pattern_bytes[k]) {
                         match = 0;
                         break;
                     }

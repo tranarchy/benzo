@@ -9,7 +9,7 @@ This hack works by patching the `IsOtherEnemy` function in the game making enemi
 
 ## VAC
 
-I'm unsure if this is VAC detected, it doesn't change any cvar, but `TracerPid` will be visible to VAC during the patching process, however there are ways to hide this
+This should be safe to use since it doesn't change any cvar, however `TracerPid` will be visible to VAC during the patching process, but there are ways to hide this
 
 ## Build-time dependencies
 
