@@ -44,6 +44,9 @@ int get_pid(char *proc_name) {
                 if (strstr(line, proc_name) != NULL) {
                     pid = atoi(entry->d_name);
 
+                    fclose(cmdline);
+                    closedir(dir);
+
                     return pid;
                 }
             }
@@ -52,9 +55,9 @@ int get_pid(char *proc_name) {
         }
     }
 
-    return -1;
-
     closedir(dir);
+
+    return -1;
 }
 
 int write_mem(unsigned long long addr, int offset, pid_t pid) {
