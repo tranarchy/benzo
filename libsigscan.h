@@ -1,0 +1,1 @@
+unsigned long long sig_scan(char* pattern, char *target_file, pid_t pid);
