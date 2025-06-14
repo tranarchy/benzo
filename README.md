@@ -7,6 +7,8 @@
 
 This hack works by patching the `IsOtherEnemy` function in the game making enemies appear as teammates, showing their name, health and gun through walls
 
+This project utilizes my signature scanning library, click [here](https://github.com/tranarchy/libsigscan) to learn more about it
+
 ## VAC
 
 This should be safe to use since it doesn't change any cvar, however `TracerPid` will be visible to VAC during the patching process, but there are ways to hide this
