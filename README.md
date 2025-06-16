@@ -5,11 +5,13 @@
 
 ## About
 
-This hack works by patching the `IsOtherEnemy` function in the game making enemies appear as teammates, showing their name, health and gun through walls
+This hack works by patching the `IsOtherEnemy` function in the game making the function return false every time
+
+The enemies appear as teammates, showing their name, health and gun through walls
 
 ## VAC
 
-This should be safe to use since it doesn't change any cvar, however `TracerPid` will be visible to VAC during the patching process, but there are ways to hide this
+This should be safe to use since it doesn't change any cvar, however `TracerPid` (`/proc/$(pidof cs2)/status`) will be visible to VAC during the patching process, but there are ways to hide this [1](https://gist.github.com/doughgle/e3a8c350dbf2370e69212f8b91fa4c88#file-gistfile1-txt-L17) [2](https://github.com/LWSS/TracerHid)
 
 ## Prerequisites
 
