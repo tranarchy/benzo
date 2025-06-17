@@ -487,6 +487,16 @@ found_match:
     addq loop_read_mem_cnt, %r12
     addq $2, %r12
 
+    jmp write_mem
+
+failed_match:
+    incq loop_read_mem_cnt
+    jmp loop_read_mem 
+
+continue_loop_addr_range:
+    addq $1024, %r12
+    jmp loop_addr_range
+
 write_mem:
     mov $SYS_PTRACE, %rax
     mov $PTRACE_ATTACH, %rdi
@@ -557,16 +567,6 @@ write_mem:
     mov $patched_msg, %rsi
     mov $patched_msg_len, %rdx
     syscall
-
-    jmp exit
-
-failed_match:
-    incq loop_read_mem_cnt
-    jmp loop_read_mem 
-
-continue_loop_addr_range:
-    addq $1024, %r12
-    jmp loop_addr_range
 
 exit:
     mov $SYS_CLOSE, %rax
