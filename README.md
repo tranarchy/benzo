@@ -11,7 +11,7 @@ The enemies appear as teammates, showing their name, health and gun through wall
 
 ## VAC
 
-This should be safe to use since it doesn't change any cvar, however `TracerPid` (`/proc/$(pidof cs2)/status`) will be visible to VAC during the patching process, but there are ways to hide this [1](https://gist.github.com/doughgle/e3a8c350dbf2370e69212f8b91fa4c88#file-gistfile1-txt-L17) [2](https://github.com/LWSS/TracerHid)
+This should be safe to use since it doesn't change any cvar, however `TracerPid` will be visible to VAC during the patching process, but there are ways to hide this
 
 ## Prerequisites
 
@@ -19,7 +19,7 @@ You will need `GNU assembler` and `GNU linker`
 
 On most distros the `binutils` package has these tools, so just install that
 
-If you want to use another assembler you will need to use one that supports `AT&T` syntax
+If you want to use another assembler you will need to use one that supports `GAS` syntax (e.g., `yasm`)
 
 ## How to use
 
