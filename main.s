@@ -19,6 +19,10 @@
 .equ NEWLINE, 10
 .equ SPACE, 32
 .equ DASH, 45
+.equ NUM_0, 48
+.equ NUM_9, 57
+.equ LOWER_A, 97
+.equ LOWER_F, 102
 
 # sys/ptrace.h
 
@@ -160,13 +164,13 @@ get_pid:
 convert_pid_loop:
     movb (%r14), %al
 
-    cmpb $'0', %al
+    cmpb $NUM_0, %al
     jl read_maps_file
 
-    cmpb $'9', %al
+    cmpb $NUM_9, %al
     jg read_maps_file
 
-    subb $'0', %al
+    subb $NUM_0, %al
     movzbq %al, %rcx
 
     imul $10, %r15
@@ -258,7 +262,6 @@ get_end_addr:
 got_end_addr:
     mov %rbx, %rbp
     sub $target_file_len, %rbp
-    sub $1, %rbp
 
 skip_until_wanted_name:
     cmp %rbp, %rcx
@@ -271,6 +274,7 @@ skip_until_wanted_name:
 
 start_copy_file_name:
     mov $target_file_len, %rcx
+    sub $1, %rcx
 
 copy_file_name:
     cmp $0, %rcx
@@ -346,18 +350,18 @@ convert_start_addr:
 
     shl $4, %r14
 
-    cmp $'9', %cl
+    cmp $NUM_9, %cl
     jle convert_start_digit
 
-    cmp $'f', %cl
+    cmp $LOWER_F, %cl
     jle convert_start_alpha
 
 convert_start_digit:
-    sub $'0', %cl
+    sub $NUM_0, %cl
     jmp add_to_temp_start
 
 convert_start_alpha:
-    sub $'a', %cl
+    sub $LOWER_A, %cl
     add $10, %cl
     jmp add_to_temp_start
 
@@ -383,19 +387,19 @@ convert_end_addr:
 
     shl $4, %r14
 
-    cmp $'9', %cl
+    cmp $NUM_9, %cl
     jle convert_end_digit
 
-    cmp $'f', %cl
+    cmp $LOWER_F, %cl
     jle convert_end_alpha
 
 convert_end_digit:
-    sub $'0', %cl
+    sub $NUM_0, %cl
     jmp add_to_temp_end
 
 
 convert_end_alpha:
-    sub $'a', %cl
+    sub $LOWER_A, %cl
     add $10, %cl
     jmp add_to_temp_end
 
@@ -598,7 +602,7 @@ exit:
     mem_read_buff:      .space 1030 
 
 .data
-    target_file:        .ascii "libclient.so"
+    target_file:        .asciz "libclient.so"
     target_file_len =.- target_file
 
     target_proc:        .asciz "cs2"
@@ -628,5 +632,5 @@ exit:
 
     cwd:                .asciz "."
 
-    patched_msg:        .ascii "Patched!\n"
+    patched_msg:        .asciz "Patched!\n"
     patched_msg_len =.- patched_msg
