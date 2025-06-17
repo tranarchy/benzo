@@ -37,6 +37,7 @@
 
 # CONSTS
 
+.equ BYTES_TO_READ, 1024
 .equ PATTERN_LEN, 7
 .equ BYTE_TO_WRITE, 0xc3
 
@@ -219,6 +220,31 @@ read_file_by_line:
 
     jmp read_file_by_line
 
+clear_line:
+    xor %eax, %eax
+    mov $32, %rcx
+    mov $start_addr_buff, %rdi
+    cld
+    rep stosb
+
+    xor %eax, %eax
+    mov $32, %rcx
+    mov $end_addr_buff, %rdi
+    cld
+    rep stosb
+
+    xor %eax, %eax
+    mov %rbx, %rcx
+    mov $line, %rdi
+    cld
+    rep stosb
+
+    mov $line, %r12
+
+    mov $0, %rbx
+
+    jmp read_file_by_line
+
 parse_line:
     mov $line, %r12
     mov $start_addr_buff, %r13
@@ -299,32 +325,6 @@ term_file_name:
 
     jmp strcmp_file
 
-clear_line:
-    xor %eax, %eax
-    mov $32, %rcx
-    mov $start_addr_buff, %rdi
-    cld
-    rep stosb
-
-    xor %eax, %eax
-    mov $32, %rcx
-    mov $end_addr_buff, %rdi
-    cld
-    rep stosb
-
-    xor %eax, %eax
-    mov %rbx, %rcx
-    mov $line, %rdi
-    cld
-    rep stosb
-
-    mov $line, %r12
-
-    mov $0, %rbx
-
-    jmp read_file_by_line
-
-
 strcmp_file:
     movb (%r12), %al
     movb (%r13), %bl
@@ -341,7 +341,6 @@ found_file:
     lea start_addr_buff, %r12
     lea start_addr, %r13
     mov $0, %r14
-
 
 convert_start_addr:
     movzbq (%r12), %rcx
@@ -419,23 +418,14 @@ loop_addr_range:
     cmpq %r12, %r13
     je clear_line
 
-    # bytes left
-    movq %r13, %r15
-    subq %r12, %r15
-
-    # bytes to read
-    movq $1024, %r14
-    addq $PATTERN_LEN, %r14
-    subq $1, %r14
-
 read_mem:
     subq $32, %rsp
 
     leaq mem_read_buff(%rip), %rax
     movq %rax, 0(%rsp)
-    movq %r14, 8(%rsp)
+    movl $BYTES_TO_READ, 8(%rsp)
     movq %r12, 16(%rsp)
-    movq %r14, 24(%rsp)
+    movl $BYTES_TO_READ, 24(%rsp)
 
     mov $SYS_PROCESS_VM_READV, %rax
     mov pid, %rdi 
@@ -458,7 +448,6 @@ read_mem:
 
     movq $0, loop_read_mem_cnt
     
-
 loop_read_mem:
     movq loop_read_mem_cnt, %rax
 
@@ -493,7 +482,6 @@ sig_scan:
     incq sig_scan_cnt
 
     jmp sig_scan
-
 
 found_match:  
     addq loop_read_mem_cnt, %r12
@@ -595,24 +583,18 @@ exit:
 
     line:               .space 1024
     
-    read_file:          .space 256  
+    read_file:          .space 256
     start_addr_buff:    .space 32
     end_addr_buff:      .space 32
 
-    mem_read_buff:      .space 1030 
+    mem_read_buff:      .space BYTES_TO_READ 
 
 .data
-    target_file:        .asciz "libclient.so"
-    target_file_len =.- target_file
-
-    target_proc:        .asciz "cs2"
-    target_proc_len =.- target_proc
-
-    cmdline_buff_read:  .quad 0
-
-    pid:                .quad 0
+    pid:                .int 0
 
     maps_fd:            .int 0
+
+    cmdline_buff_read:  .quad 0
 
     start_addr:         .quad 0
     end_addr:           .quad 0
@@ -631,6 +613,12 @@ exit:
     cmdline_file:       .asciz "cmdline"
 
     cwd:                .asciz "."
+
+    target_file:        .asciz "libclient.so"
+    target_file_len =.- target_file
+
+    target_proc:        .asciz "cs2"
+    target_proc_len =.- target_proc
 
     patched_msg:        .asciz "Patched!\n"
     patched_msg_len =.- patched_msg
