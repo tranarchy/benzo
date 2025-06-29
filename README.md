@@ -4,7 +4,7 @@
 
 ## About
 
-This hack works by patching the `IsOtherEnemy` function in the game making the function return false every time
+This hack works by patching the `IsOtherEnemy` function in the game's memory, making the function return false every time
 
 The enemies appear as teammates, showing their name, health and gun through walls
 
@@ -14,9 +14,9 @@ This should be safe to use since it doesn't change any cvar, however `TracerPid`
 
 ## Prerequisites
 
-You will need `GNU assembler` and `GNU linker`
+You will need `GNU assembler`, `GNU linker` and `GNU make`
 
-On most distros the `binutils` package has these tools, so just install that
+On most distros installing the `binutils` and `make` package will get you these tools
 
 If you want to use another assembler you will need to use one that supports `GAS` syntax (e.g., `yasm`)
 
