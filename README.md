@@ -32,5 +32,5 @@ On most distros installing the `binutils` and `make` package will get you these 
 git clone https://github.com/tranarchy/benzo
 cd benzo
 make
-./benzo
+sudo ./benzo
 ```

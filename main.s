@@ -342,74 +342,43 @@ found_file:
     lea start_addr, %r13
     mov $0, %r14
 
-convert_start_addr:
+convert_addr:
     movzbq (%r12), %rcx
     cmp $0, %cl
-    je done_start_addr
+    je done_converting
 
     shl $4, %r14
 
     cmp $NUM_9, %cl
-    jle convert_start_digit
+    jle convert_digit
 
     cmp $LOWER_F, %cl
-    jle convert_start_alpha
+    jle convert_alpha
 
-convert_start_digit:
+convert_digit:
     sub $NUM_0, %cl
-    jmp add_to_temp_start
+    jmp add_to_temp
 
-convert_start_alpha:
+convert_alpha:
     sub $LOWER_A, %cl
     add $10, %cl
-    jmp add_to_temp_start
+    jmp add_to_temp
 
-add_to_temp_start:
+add_to_temp:
     add %rcx, %r14
     inc %r12
 
-    jmp convert_start_addr
+    jmp convert_addr
 
-done_start_addr:
+done_converting:
     mov %r14, (%r13)
 
     lea end_addr_buff, %r12
     lea end_addr, %r13
     mov $0, %r14
 
-    jmp convert_end_addr
-
-convert_end_addr:
-    movzbq (%r12), %rcx
-    cmp $0, %cl
-    je done_end_addr
-
-    shl $4, %r14
-
-    cmp $NUM_9, %cl
-    jle convert_end_digit
-
-    cmp $LOWER_F, %cl
-    jle convert_end_alpha
-
-convert_end_digit:
-    sub $NUM_0, %cl
-    jmp add_to_temp_end
-
-
-convert_end_alpha:
-    sub $LOWER_A, %cl
-    add $10, %cl
-    jmp add_to_temp_end
-
-add_to_temp_end:
-    add %rcx, %r14
-    inc %r12
-
-    jmp convert_end_addr
-
-done_end_addr:
-    mov %r14, (%r13)
+    cmpq $0, %r13
+    je convert_addr
 
     movq start_addr, %r12
     movq end_addr, %r13
