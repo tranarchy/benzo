@@ -1,6 +1,8 @@
 # benzo
-![image](https://github.com/user-attachments/assets/1c2a1d1e-9da0-4916-9998-dd61b4841cef)
-<p align="center">CS2 wallhack for Linux written in x86-64 assembly</p>
+<p align="center">
+<img src="./preview.gif"/>
+</p>
+<p align="center">CS2 one byte wallhack for Linux written in x86-64 assembly</p>
 
 ## How it works
 
