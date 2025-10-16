@@ -14,6 +14,8 @@ The enemies appear as teammates, showing their name, health and gun through wall
 
 benzo doesn't link with libc, it only uses Linux x86-64 syscalls, therefore its only runtime dependency is the x86-64 Linux kernel
 
+The cheat also works if you are running Steam in a Flatpak (even on a musl libc system)
+
 ## VAC
 
 This should be safe to use since it doesn't change any cvar, however `TracerPid` will be visible to VAC during the patching process, but there are ways to hide this
